@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 interface Todo {
   id: number;
@@ -9,21 +9,21 @@ interface Todo {
 }
 
 const TodoList = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
+  const fetchData = () =>
     axios
-      .get("https://jsonplaceholder.typicode.com/todos")
-      .then((res) => setTodos(res.data))
-      .catch((error) => setError(error));
-  }, []);
+      .get<Todo[]>("https://jsonplaceholder.typicode.com/todos")
+      .then((res) => res.data);
 
-  if (error) return <p>{error}</p>;
+  const { data: todos } = useQuery({
+    queryKey: ["todos"], // Responsible for cashing data via key value
+    queryFn: fetchData, // responsible for fetching data from api
+  });
+
+  //   if (error) return <p>{error}</p>;
 
   return (
     <ul className="list-group">
-      {todos.map((todo) => (
+      {todos?.map((todo) => (
         <li key={todo.id} className="list-group-item">
           {todo.title}
         </li>
