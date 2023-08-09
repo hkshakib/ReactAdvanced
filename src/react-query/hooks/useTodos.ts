@@ -17,6 +17,7 @@ const useTodos = () => {
   return useQuery<Todo[], Error>({
     queryKey: ["todos"], // Responsible for cashing data via key value
     queryFn: fetchData, // responsible for fetching data from api
+    staleTime: 10 * 1000,
   });
 };
 
